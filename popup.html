@@ -1,17 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="styles.css">
+  <title>AI SEO Inspector</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 260px;
+      padding: 15px;
+      background: #0f172a;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #38bdf8;
+    }
+
+    button {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    #status {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #cbd5f5;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>AI SEO Inspector</h2>
+  <h2>🔍 AI SEO Inspector</h2>
 
-<div id="results">
-Loading...
-</div>
+  <button id="analyzeBtn">Analyze This Page</button>
 
-<script src="popup.js"></script>
+  <div id="status">Click to run SEO check</div>
+
+  <script src="popup.js"></script>
 
 </body>
 </html>
