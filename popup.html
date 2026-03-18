@@ -1,58 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>AI SEO Inspector</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
+      padding: 12px;
       width: 300px;
-      padding: 15px;
       background: #0f172a;
-      color: #fff;
+      color: #e2e8f0;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 600;
     }
 
     h2 {
-      font-size: 16px;
-      color: #38bdf8;
-      margin-bottom: 10px;
-      text-align: center;
+      font-size: 14px;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 3px;
     }
 
-    button {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      margin-bottom: 12px;
+    p {
+      font-size: 13px;
+      margin: 4px 0;
     }
 
     .score {
-      font-size: 22px;
       font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
+      font-size: 14px;
     }
 
-    .good { color: #22c55e; }
-    .bad { color: #ef4444; }
+    .low { color: #22c55e; }      /* green */
+    .medium { color: #facc15; }   /* yellow */
+    .high { color: #ef4444; }     /* red */
 
-    .item {
-      font-size: 12px;
-      margin: 4px 0;
+    .box {
+      background: #1e293b;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 6px;
     }
   </style>
 </head>
 
 <body>
 
-  <h2>🔍 AI SEO Inspector</h2>
+  <h1>&#128269; AI SEO Inspector</h1>
 
-  <button id="analyzeBtn">Analyze Page</button>
+  <!-- SEO SECTION -->
+  <h2>SEO Overview</h2>
+  <div class="box">
+    <p>SEO Score: <span class="score">Coming soon</span></p>
+  </div>
 
-  <div id="results"></div>
+  <!-- PERSUASION SECTION -->
+  <h2>🧠 Persuasion Analysis</h2>
+  <div class="box">
+    <p>Score: <span id="persuasionScore" class="score">-</span></p>
+  </div>
+
+  <!-- MANIPULATION SECTION -->
+  <h2>🚨 Manipulation Risk</h2>
+  <div class="box">
+    <p>Level: <span id="manipulation" class="score">-</span></p>
+  </div>
+
+  <!-- DETAILS -->
+  <h2>Breakdown</h2>
+  <div class="box">
+    <p id="details">Analyzing...</p>
+  </div>
 
   <script src="popup.js"></script>
 
