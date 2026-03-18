@@ -1,3 +1,6 @@
+let pageText = "";
+
+// ===== COLOR LOGIC =====
 function getColorClass(value, type = "score") {
   if (type === "risk") {
     if (value === "HIGH") return "high";
@@ -10,9 +13,12 @@ function getColorClass(value, type = "score") {
   return "high";
 }
 
+// ===== RECEIVE DATA =====
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "analysisResult") {
     const d = request.data;
+
+    pageText = d.text || "";
 
     // SEO
     const seoEl = document.getElementById("seoScore");
@@ -41,15 +47,36 @@ chrome.runtime.onMessage.addListener((request) => {
       sugBox.innerHTML = "<p>All good 👍</p>";
     } else {
       d.suggestions.forEach(s => {
-        const li = document.createElement("p");
-        li.innerText = "• " + s;
-        sugBox.appendChild(li);
+        const p = document.createElement("p");
+        p.innerText = "• " + s;
+        sugBox.appendChild(p);
       });
     }
   }
 });
 
-// Trigger analysis
+// ===== REWRITE BUTTON =====
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("rewriteBtn").addEventListener("click", () => {
+
+    if (!pageText) {
+      document.getElementById("rewriteOutput").innerText = "No content found.";
+      return;
+    }
+
+    let rewritten = pageText
+      .replace(/very/gi, "extremely")
+      .replace(/good/gi, "high-quality")
+      .replace(/buy now/gi, "consider exploring")
+      .replace(/cheap/gi, "cost-effective");
+
+    rewritten = rewritten.substring(0, 300) + "...";
+
+    document.getElementById("rewriteOutput").innerText = rewritten;
+  });
+});
+
+// ===== TRIGGER ANALYSIS =====
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   chrome.tabs.sendMessage(tabs[0].id, { action: "analyze" });
 });
