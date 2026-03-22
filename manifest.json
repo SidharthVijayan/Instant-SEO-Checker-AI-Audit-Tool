@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "AI SEO & LLM Visibility Inspector",
-  "version": "2.0",
-  "description": "SEO + AI Visibility + LLM Optimization Tool",
+  "version": "2.1",
+  "description": "SEO + AI Visibility + LLM Optimization + Report Generator",
 
   "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["<all_urls>"],
