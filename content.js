@@ -1,20 +1,18 @@
-// LISTEN for popup trigger
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request) => {
   if (request.action === "analyze") {
 
-    // Run analysis
-    setTimeout(() => {
-
-      const fullText = document.body.innerText;
+    try {
+      const fullText = document.body.innerText || "";
       const text = fullText.substring(0, 3000).toLowerCase();
 
-      const title = document.title;
+      const title = document.title || "";
       const metaDescription = document.querySelector('meta[name="description"]')?.content || "";
       const h1Tags = document.querySelectorAll("h1");
 
-      const powerWords = ["secret", "proven", "instant"];
-      const scarcityWords = ["limited", "hurry"];
-      const fearWords = ["danger", "risk"];
+      // WORD LISTS
+      const powerWords = ["secret","proven","instant","guaranteed","exclusive","ultimate","best","top"];
+      const scarcityWords = ["limited","only today","hurry","last chance","act now"];
+      const fearWords = ["danger","risk","warning","mistake","avoid","loss"];
 
       function countWords(list, text) {
         let count = 0;
@@ -30,6 +28,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const scarcityCount = countWords(scarcityWords, text);
       const fearCount = countWords(fearWords, text);
 
+      // CONTENT METRICS
+      const wordCount = fullText.split(" ").length;
+      const sentenceCount = fullText.split(".").length;
+      const avgSentenceLength = Math.round(wordCount / sentenceCount);
+
+      // SCORES
       let persuasionScore = Math.min(100,
         powerCount * 2 + scarcityCount * 3 + fearCount * 2
       );
@@ -45,26 +49,47 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (h1Tags.length === 0) seoScore -= 20;
       if (h1Tags.length > 1) seoScore -= 10;
 
+      // SUGGESTIONS
       let suggestions = [];
 
-      if (title.length < 30) suggestions.push("Improve title length");
-      if (metaDescription.length < 50) suggestions.push("Add meta description");
-      if (h1Tags.length === 0) suggestions.push("Add H1");
+      if (title.length < 30) suggestions.push("Title is too short. Add keywords.");
+      if (metaDescription.length < 50) suggestions.push("Meta description is weak or missing.");
+      if (h1Tags.length === 0) suggestions.push("Add an H1 tag.");
+
+      if (wordCount < 300) suggestions.push("Content is too thin. Add depth.");
+      if (avgSentenceLength > 25) suggestions.push("Sentences too long. Improve readability.");
+
+      if (persuasionScore === 0) {
+        suggestions.push("Add emotional or persuasive language.");
+      }
+
+      if (persuasionScore > 70) {
+        suggestions.push("Reduce aggressive persuasion for better trust.");
+      }
+
+      const result = {
+        seoScore,
+        persuasionScore,
+        manipulation,
+        powerCount,
+        scarcityCount,
+        fearCount,
+        suggestions,
+        wordCount,
+        avgSentenceLength,
+        text: fullText.substring(0, 1000)
+      };
+
+      // CACHE
+      chrome.storage.local.set({ seoData: result });
 
       chrome.runtime.sendMessage({
         action: "analysisResult",
-        data: {
-          seoScore,
-          persuasionScore,
-          manipulation,
-          powerCount,
-          scarcityCount,
-          fearCount,
-          suggestions,
-          text: fullText.substring(0, 1000)
-        }
+        data: result
       });
 
-    }, 50);
+    } catch (err) {
+      console.error(err);
+    }
   }
 });
