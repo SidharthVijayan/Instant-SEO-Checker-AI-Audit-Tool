@@ -2,38 +2,35 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>AI SEO Inspector</title>
+<title>AI SEO Tool</title>
 
 <style>
-body { font-family: Arial; background:#0f172a; color:#e2e8f0; padding:10px; width:330px; }
-.box { background:#1e293b; padding:8px; margin-top:6px; border-radius:6px; }
-button { width:100%; padding:6px; background:#3b82f6; color:#fff; border:none; margin-top:5px; }
+body {
+  font-family: Arial;
+  background:#0f172a;
+  color:#e2e8f0;
+  padding:10px;
+  width:340px;
+}
+.box {
+  background:#1e293b;
+  padding:8px;
+  margin-top:6px;
+  border-radius:6px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>SEO Score</h2>
-<div class="box"><span id="seoScore">-</span></div>
-
-<h2>🤖 AI Visibility</h2>
-<div class="box"><span id="aiScore">-</span></div>
-
-<h2>🧬 Originality</h2>
-<div class="box"><span id="originality">-</span></div>
-
-<h2>Metrics</h2>
-<div class="box"><p id="metrics"></p></div>
-
-<h2>⚠️ SEO Issues</h2>
-<div class="box" id="issues"></div>
-
-<h2>🧠 LLM Optimization</h2>
-<div class="box" id="llm"></div>
-
-<h2>📄 SEO Report</h2>
+<h2>📊 Basic Metrics</h2>
 <div class="box">
-<button id="downloadReport">Download Report (CSV)</button>
+  <p id="metrics">Loading...</p>
+</div>
+
+<h2>🔥 AI Deep Analysis</h2>
+<div class="box">
+  <p id="aiInsights">Running AI analysis...</p>
 </div>
 
 <script src="popup.js"></script>
