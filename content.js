@@ -19,8 +19,8 @@ chrome.runtime.onMessage.addListener((request) => {
       data: result
     });
 
-    // 🔥 AI CALL
-    fetch("http://localhost:3000/analyze", {
+    // FIXED: 127.0.0.1
+    fetch("http://127.0.0.1:3000/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
