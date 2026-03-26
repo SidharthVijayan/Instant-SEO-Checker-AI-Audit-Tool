@@ -1,29 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   const metricsEl = document.getElementById("metrics");
+  const aiEl = document.getElementById("aiInsights");
 
-  // Load cached data
-  chrome.storage.local.get("seoData", (res) => {
-    if (res.seoData) {
-      metricsEl.innerText = "Words: " + res.seoData.wordCount;
-    }
-  });
-
-  // Send message to content script
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (!tabs[0]?.id) {
-      metricsEl.innerText = "No active tab";
-      return;
-    }
+    const tabId = tabs[0].id;
 
-    chrome.tabs.sendMessage(
-      tabs[0].id,
-      { action: "analyze" },
+    // Inject content.js every time (no refresh needed)
+    chrome.scripting.executeScript(
+      {
+        target: { tabId },
+        files: ["content.js"]
+      },
       () => {
-        if (chrome.runtime.lastError) {
-          metricsEl.innerText =
-            "⚠️ Refresh page or use normal site";
-        }
+        chrome.tabs.sendMessage(tabId, { action: "analyze" });
       }
     );
   });
