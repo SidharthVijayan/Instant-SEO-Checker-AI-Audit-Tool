@@ -1,65 +1,60 @@
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
-
-const OPENAI_API_KEY = "YOUR_OPENAI_API_KEY";
 
 app.post("/analyze", async (req, res) => {
   try {
     const { content, title } = req.body;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert SEO, AI visibility, and content strategist."
-          },
-          {
-            role: "user",
-            content: `
-Analyze this page and give structured output:
+        model: "llama3",
+        prompt: `
+You are an expert SEO + AI visibility analyst.
 
-1. SEO issues
-2. AI/LLM visibility improvements
-3. Content weaknesses
-4. Suggested rewrite for:
+Analyze and return:
+
+1. SEO Issues
+2. AI Visibility Improvements
+3. Content Weaknesses
+4. Suggested:
    - Meta Title
    - Meta Description
    - H1
-5. Give score (0-100):
-   - SEO Score
-   - AI Visibility Score
+5. Scores:
+   - SEO Score (0-100)
+   - AI Visibility Score (0-100)
 
 Title: ${title}
 
 Content:
 ${content}
-`
-          }
-        ]
+`,
+        stream: false
       })
     });
 
     const data = await response.json();
 
     res.json({
-      result: data.choices[0].message.content
+      result: data.response || "No response from Ollama"
     });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      result: "Server Error: " + err.message
+    });
   }
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(3000, () => {
+  console.log("✅ Backend running at http://localhost:3000");
+});
