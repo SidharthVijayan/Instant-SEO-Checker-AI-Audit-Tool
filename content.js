@@ -14,16 +14,12 @@ chrome.runtime.onMessage.addListener((request) => {
       text: fullText.substring(0, 2000)
     };
 
-    // Save basic data
-    chrome.storage.local.set({ seoData: result });
-
-    // Send basic result to popup
     chrome.runtime.sendMessage({
       action: "analysisResult",
       data: result
     });
 
-    // 🔥 AI CALL (Ollama via backend)
+    // 🔥 AI CALL
     fetch("http://localhost:3000/analyze", {
       method: "POST",
       headers: {
