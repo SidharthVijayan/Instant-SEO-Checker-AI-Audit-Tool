@@ -2,16 +2,14 @@
   try {
     if (document.getElementById("seo-inspector-panel")) return;
 
-    const issues = [];
-
     function createPanel() {
       const panel = document.createElement("div");
       panel.id = "seo-inspector-panel";
       panel.style.position = "fixed";
       panel.style.top = "20px";
       panel.style.right = "20px";
-      panel.style.width = "300px";
-      panel.style.maxHeight = "400px";
+      panel.style.width = "320px";
+      panel.style.maxHeight = "420px";
       panel.style.overflowY = "auto";
       panel.style.background = "#111";
       panel.style.color = "#fff";
@@ -25,14 +23,14 @@
       return panel;
     }
 
-    function addIssue(panel, title, reason, fix) {
+    function addLine(panel, label, value, status) {
+      const color =
+        status === "good" ? "#00e676" :
+        status === "warn" ? "#ffca28" : "#ff5252";
+
       const div = document.createElement("div");
-      div.style.marginBottom = "10px";
-      div.innerHTML = `
-        <b style="color:#ff5252;">${title}</b><br/>
-        <small>Why: ${reason}</small><br/>
-        <small style="color:#00e676;">Fix: ${fix}</small>
-      `;
+      div.style.marginBottom = "6px";
+      div.innerHTML = `<span style="color:${color}">${label}: ${value}</span>`;
       panel.appendChild(div);
     }
 
@@ -40,34 +38,20 @@
       el.style.outline = `2px dashed ${color}`;
     }
 
-    // H1
-    if (document.querySelectorAll("h1").length === 0) {
-      issues.push({
-        title: "H1 not found",
-        reason: "Search engines rely on H1 to understand page topic",
-        fix: "Add one clear H1 with primary keyword"
-      });
-    }
+    const panel = createPanel();
 
-    // H2
-    if (document.querySelectorAll("h2").length === 0) {
-      issues.push({
-        title: "No H2 headings found",
-        reason: "Poor structure affects readability",
-        fix: "Break content into sections using H2"
-      });
-    }
+    // ---------- HEADINGS ----------
+    const h1 = document.querySelectorAll("h1").length;
+    const h2 = document.querySelectorAll("h2").length;
 
-    // Meta
-    if (!document.querySelector("meta[name='description']")) {
-      issues.push({
-        title: "Meta description not found",
-        reason: "Reduces search snippet control",
-        fix: "Add a 140–160 character meta description"
-      });
-    }
+    addLine(panel, "H1 count", h1, h1 === 1 ? "good" : "bad");
+    addLine(panel, "H2 count", h2, h2 > 0 ? "good" : "warn");
 
-    // Paragraphs
+    // ---------- META ----------
+    const meta = document.querySelector("meta[name='description']");
+    addLine(panel, "Meta description", meta ? "Found" : "Not found", meta ? "good" : "bad");
+
+    // ---------- PARAGRAPHS ----------
     let longCount = 0;
     document.querySelectorAll("p").forEach(p => {
       if (p.innerText.split(/\s+/).length > 120) {
@@ -76,49 +60,23 @@
       }
     });
 
-    if (longCount > 0) {
-      issues.push({
-        title: "Long paragraphs detected",
-        reason: "Hard to read",
-        fix: "Keep paragraphs under 80 words"
-      });
-    }
+    addLine(panel, "Long paragraphs", longCount, longCount === 0 ? "good" : "warn");
 
-    // Lists
-    if (document.querySelectorAll("ul, ol").length === 0) {
-      issues.push({
-        title: "No lists found",
-        reason: "Lists improve readability",
-        fix: "Add bullet points"
-      });
-    }
+    // ---------- LISTS ----------
+    const lists = document.querySelectorAll("ul, ol").length;
+    addLine(panel, "Lists", lists, lists > 0 ? "good" : "bad");
 
-    // Internal links
+    // ---------- INTERNAL LINKS ----------
     const links = [...document.querySelectorAll("a")];
     const internal = links.filter(a => a.href.includes(location.hostname)).length;
 
-    if (internal < 3) {
-      issues.push({
-        title: "Low internal links",
-        reason: "Weak internal structure",
-        fix: "Add at least 3–5 internal links"
-      });
-    }
+    addLine(panel, "Internal links", internal, internal >= 3 ? "good" : "warn");
 
-    // FAQ
+    // ---------- FAQ ----------
     const text = document.body.innerText.toLowerCase();
-    if (!text.includes("faq")) {
-      issues.push({
-        title: "FAQ section not found",
-        reason: "Helps structured answers",
-        fix: "Add FAQ section"
-      });
-    }
+    const faq = text.includes("faq") || text.includes("frequently asked");
 
-    if (issues.length > 0) {
-      const panel = createPanel();
-      issues.forEach(i => addIssue(panel, i.title, i.reason, i.fix));
-    }
+    addLine(panel, "FAQ section", faq ? "Found" : "Not found", faq ? "good" : "bad");
 
   } catch (e) {
     console.error(e);
